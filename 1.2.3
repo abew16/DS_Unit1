@@ -1,0 +1,37 @@
+1. What was the hottest day? Where was that?
+SELECT
+	date,
+	maxtemperaturef,
+	zip
+FROM weather
+ORDER BY maxtemperaturef DESC
+LIMIT 1
+
+2. How many trips started at each station?
+SELECT
+	start_station,
+	COUNT (*) number_of_trips
+FROM trips
+GROUP BY 1
+ORDER BY 2 DESC 
+
+
+3. What's the shortest trip that happened?
+#Originally ran the following query:
+SELECT *
+FROM trips
+ORDER BY duration 
+LIMIT 10
+
+#Noticed that >1 row contained the min duration of 1 minute so revised to capture all the rows with the minimum duration
+SELECT *
+FROM trips
+WHERE duration = 100
+
+4. What is the average trip duration, by end station?
+SELECT
+	end_station,
+	AVG(duration) avg_duration
+FROM trips
+GROUP BY 1
+ORDER BY 2 DESC
