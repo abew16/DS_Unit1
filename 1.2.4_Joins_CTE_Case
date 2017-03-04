@@ -1,5 +1,60 @@
-What are the three longest trips on rainy days?
+1. What are the three longest trips on rainy days?
+--Trying to convert datetime in weather to date so it matches start_date in trips
+--Below query results in duplicate trip_ids
 
+WITH dates
+AS (
+	SELECT
+	start_date date_time,
+	date(start_date) date
+	FROM trips
+	)
+SELECT
+	trips.trip_id,
+	trips.duration,
+	trips.start_date,
+	dates.date,
+	weather.events
+FROM trips
+JOIN dates
+ON dates.date_time = trips.start_date
+JOIN weather
+ON dates.date = weather.date
+WHERE weather.events LIKE '%Rain%'
+ORDER BY trips.duration DESC
+LIMIT 3
 
 What is the average number of open docks in each station on days where it is raining in that zip code?
+--Could not run this on my laptop due to lack of memory
+
+WITH avg_cap
+AS (
+	SELECT
+		station_id,
+		DATE(timestamp) date,
+		AVG(docks_available) avg_docks
+	FROM status
+	GROUP BY 2, 1
+	)
+SELECT
+	avg_cap.station_id,
+	AVG(avg_cap.avg_docks) avg_docks_available,
+	weather.events
+FROM avg_cap
+JOIN weather
+ON avg_cap.date = weather.Date
+WHERE weather.events LIKE '%Rain%'
+GROUP BY 1
+
 Which station is empty most often?
+SELECT
+  stations.name,
+  COUNT(*) times_unavailable
+FROM stations
+JOIN status
+ON stations.station_id = status.station_id
+WHERE bikes_available = 0
+GROUP BY 1
+ORDER BY times_unavailable DESC
+LIMIT 1
+
