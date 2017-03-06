@@ -1,0 +1,20 @@
+What's the most expensive listing? What else can you tell me about the listing?
+
+SELECT *
+FROM listings
+ORDER BY price DESC
+LIMIT 1
+
+What neighborhoods seem to be the most popular?
+
+SELECT
+	neighbourhood_group,
+	COUNT(neighbourhood) listings_per_group,
+	AVG(reviews_per_month),
+	AVG(price)
+FROM listings_summary
+GROUP BY 1
+ORDER BY 3 DESC
+
+What time of year is the cheapest time to go to your city? What about the busiest?
+
