@@ -153,7 +153,7 @@ print(df['Income'].describe([.25, .5, .75, .8, .9, .95, .99, .999]))
 #Let's do some data cleansing and emove the outliers by "winsorizing"
 #Convert all values above 95% to the 95% value which is 140,356
 
-df_inc = df
+df_inc = df.copy(deep=True)
 
 df_inc.loc[df_inc['Income'] > 140356, 'Income'] = 140356
 df_inc.loc[df_inc['Income'] < 0, 'Income'] = 0
@@ -162,24 +162,37 @@ ax = sns.boxplot(y='Income',data=df_inc,palette='pastel')
 sns.plt.title('Distribution of Income')
 sns.despine(offset=10, trim=True)
 ax.set(xlabel='', ylabel='Income')
-plt.show()
 ```
 
 
-      File "<ipython-input-13-e3ffb1607797>", line 4
-        df_inc = df.loc[(df['Income'] > 140356, 'Income'] = 140356) & (df['Income'] < 0, 'Income'] = 0)]
-                                                        ^
-    SyntaxError: invalid syntax
-    
+
+
+    [<matplotlib.text.Text at 0x88d89b0>, <matplotlib.text.Text at 0x86457d0>]
+
+
+
+
+![png](output_7_1.png)
 
 
 
 ```python
-#Looks like the mean dropped from above 30,000 to less than 20,000 after removing the outliers
+#Looks like the median dropped from above 30,000 to less than 20,000 after removing the outliers
 #Let's see what it really is
 
 print(df_inc["Income"].describe())
 ```
+
+    count    100633.000000
+    mean      30130.614331
+    std       41537.295904
+    min           0.000000
+    25%           0.000000
+    50%        9000.000000
+    75%       47080.000000
+    max      140356.000000
+    Name: Income, dtype: float64
+    
 
 
 ```python
@@ -188,6 +201,17 @@ print(df_inc["Income"].describe())
 
 sns.distplot(df_inc['Income'])
 ```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x8901630>
+
+
+
+
+![png](output_9_1.png)
+
 
 
 ```python
@@ -201,6 +225,25 @@ sns.distplot(df_inc['Income'])
 
 ```
 
+       Income  Age Sex Full Time
+    0  140356   73   M       Yes
+    2   29003   34   F       Yes
+    3    9294   41   F       Yes
+    4   35000   43   M       Yes
+    8   85002   47   M       Yes
+    
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x865dc90>
+
+
+
+
+![png](output_10_2.png)
+
+
 
 ```python
 #There are a lot of instances of the max income
@@ -208,25 +251,87 @@ sns.distplot(df_inc['Income'])
 
 df_inc2 = df.drop(df[df.Income <= 0].index)
 
-print(df.head())
 sns.distplot(df_inc2["Income"])
-plt.show()
 ```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0xa17ac90>
+
+
+
+
+![png](output_11_1.png)
+
 
 
 ```python
-print(df['Income'].describe())
+#Create two boxplots by gender to see the distribution for each
+
+ax = sns.boxplot(x='Sex', y='Income',data=df_inc)  
+sns.plt.title('Income Distribution by Gender')
+sns.despine(offset=10, trim=True)
+ax.set(xlabel='Gender', ylabel='Income')
 ```
+
+
+
+
+    [<matplotlib.text.Text at 0x8947bb0>, <matplotlib.text.Text at 0xe91970>]
+
+
+
+
+![png](output_12_1.png)
+
 
 
 ```python
+#Average Age by Gender for people with income
 
+ax = sns.boxplot(x='Sex', y='Age',data=df_inc)  
+sns.plt.title('Age Distribution by Gender')
+sns.despine(offset=10, trim=True)
+ax.set(xlabel='Gender', ylabel='Age')
 ```
+
+
+
+
+    [<matplotlib.text.Text at 0x89615b0>, <matplotlib.text.Text at 0x10f8b30>]
+
+
+
+
+![png](output_13_1.png)
+
 
 
 ```python
+#Create a scatterplot with the new data fram inc_100 
+#This df only includes people who have income and has capped the highest income level to 140,356
 
+g = sns.lmplot(y='Income',
+               x='Age',
+               data=df_inc, 
+               fit_reg=True, 
+               scatter_kws={'alpha':0.4})
+g.set_ylabels("Income")
+g.set_xlabels("Age")
+sns.plt.title('Scatterplot: Income by Age')
 ```
+
+
+
+
+    <matplotlib.text.Text at 0xa1d3bb0>
+
+
+
+
+![png](output_14_1.png)
+
 
 
 ```python
