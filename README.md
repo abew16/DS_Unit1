@@ -1,2 +1,2 @@
 # DS_Unit1
-Exercises &amp; Capstone for Thinkful Data Science Bootcamp Unit 1
+Exercises &amp; Capstone for Data Science Unit 1
